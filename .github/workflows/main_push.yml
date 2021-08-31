@@ -48,7 +48,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/postService:latest, ${{ secrets.DOCKERHUB_USERNAME }}/postService:${{env.SEMVER}}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/post-service:latest, ${{ secrets.DOCKERHUB_USERNAME }}/post-service:${{env.SEMVER}}
   github-release:
     runs-on: ubuntu-20.04
     needs: determine-version
