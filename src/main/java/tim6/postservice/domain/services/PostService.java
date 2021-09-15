@@ -1,5 +1,6 @@
 package tim6.postservice.domain.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -86,7 +88,7 @@ public class PostService {
                         "favorites",
                         "comments")
                 .withQuery(finalizedQuery)
-                .withSort(SortBuilders.fieldSort("postDate"))
+                .withSort(SortBuilders.fieldSort("postDate").order(SortOrder.DESC))
                 .withPageable(pageable)
                 .build();
     }
@@ -143,12 +145,14 @@ public class PostService {
                 followerIds.stream()
                         .filter(id -> !mutedUserIds.contains(id))
                         .collect(Collectors.toList());
+        if (notMutedFollowers.isEmpty()) {
+            return new ArrayList<>();
+        }
 
         final List<Query> getFollowerPostsQueries =
                 notMutedFollowers.stream()
                         .map(id -> PostService.overviewQuery(postsByPosterIdQuery(id)))
                         .collect(Collectors.toList());
-
         final List<SearchHits<Post>> searchHits =
                 this.elasticsearchOperations.multiSearch(getFollowerPostsQueries, Post.class);
 

@@ -3,6 +3,7 @@ package tim6.postservice.adapter.http.configuration;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
+import java.util.Base64;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,7 +43,9 @@ public class TokenUtilities {
     }
 
     private Claims getClaimsFromToken(final String token) {
-        final JwtParser parser = Jwts.parser().setSigningKey(this.secret);
+        final JwtParser parser =
+                Jwts.parser()
+                        .setSigningKey(Base64.getEncoder().encodeToString(this.secret.getBytes()));
         return parser.parseClaimsJws(token).getBody();
     }
 

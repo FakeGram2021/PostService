@@ -38,7 +38,7 @@ public class Post {
     @Field(type = FieldType.Date)
     private Date postDate;
 
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     private Set<String> tags = new HashSet<>();
 
     @Field(type = FieldType.Auto)
